@@ -18,9 +18,11 @@ func TestMain(m *testing.M) {
 }
 
 func ExampleNew() {
+	counter.Store(0x6b5f9e) // as a user of this package, you don't need to do this, but it's done here to ensure the same output
+
 	g := New()
 	fmt.Println(g.Hex())
-	// Output: 5c2aad805f9e6b5f9e6b5fa3
+	// Output: 5c2aad805f9e6b5f9e6b5f9f
 }
 
 func ExampleFromHex() {
@@ -32,6 +34,15 @@ func ExampleFromHex() {
 		fmt.Println(g.Hex())
 	}
 	// Output: 5c2aad805f9e6b5f9e6b5fa3
+}
+
+func ExampleGenerateTo() {
+	counter.Store(0x6b5f9e) // as a user of this package, you don't need to do this, but it's done here to ensure the same output
+
+	var oid ObjectID
+	GenerateTo(&oid)
+	fmt.Println(oid.Hex())
+	// Output: 5c2aad805f9e6b5f9e6b5f9f
 }
 
 func TestGenerate(t *testing.T) {
