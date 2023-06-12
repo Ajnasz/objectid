@@ -3,12 +3,14 @@ GOCOVER=$(GO) tool cover
 GOTEST=$(GO) test
 
 
+.PHONY: all
 all: test build
 
+.PHONY: build
 build: bin/objectid
 
 bin/objectid:
-	$(GO) build -o bin/objectid cmd/main.go
+	$(GO) build -o bin/objectid cmd/objectid/main.go
 
 .PHONY: clean
 clean:
