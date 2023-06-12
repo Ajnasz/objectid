@@ -2,9 +2,14 @@
 
 https://pkg.go.dev/github.com/Ajnasz/objectid
 
-
-## installation
+## Installation
 
 ```
 go get -u github.com/Ajnasz/objectid
+```
+
+## Build the cli tool to generate objectIDs
+
+```
+make build
 ```
