@@ -23,6 +23,17 @@ func ExampleNew() {
 	// Output: 5c2aad805f9e6b5f9e6b5fa3
 }
 
+func ExampleFromHex() {
+	g, err := FromHex("5c2aad805f9e6b5f9e6b5fa3")
+
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(g.Hex())
+	}
+	// Output: 5c2aad805f9e6b5f9e6b5fa3
+}
+
 func TestGenerate(t *testing.T) {
 	t.Run("Equals", func(t *testing.T) {
 		g := New()
