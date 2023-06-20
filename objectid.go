@@ -2,6 +2,7 @@
 package objectid
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -11,7 +12,9 @@ import (
 	"time"
 )
 
+// ErrInvalidHex is returned when an invalid hex string is provided.
 var ErrInvalidHex = fmt.Errorf("invalid hex")
+var ErrInvalidBase64 = fmt.Errorf("invalid base64")
 
 // ObjectID is a 12-byte unique identifier for a MongoDB document.
 type ObjectID [12]byte
@@ -24,6 +27,11 @@ func (id ObjectID) String() string {
 // Hex returns the hex encoding of the ObjectID as a string.
 func (id ObjectID) Hex() string {
 	return id.String()
+}
+
+// Base64 returns the hex encoding of the ObjectID as a string.
+func (id ObjectID) Base64() string {
+	return base64.StdEncoding.EncodeToString(id[:])
 }
 
 // Time returns the timestamp part of the ObjectID.
@@ -94,4 +102,18 @@ func FromHex(str string) (ObjectID, error) {
 	}
 
 	return oid, nil
+}
+
+func FromBase64(str string) (ObjectID, error) {
+	var oid ObjectID
+	if len(str) != 16 {
+		return oid, fmt.Errorf("invalid objectid length: %d, %w", len(str), ErrInvalidBase64)
+	}
+
+	base64Bytes, err := base64.StdEncoding.DecodeString(str)
+	if err != nil {
+		return oid, errors.Join(err, ErrInvalidBase64)
+	}
+
+	return ObjectID(base64Bytes), err
 }

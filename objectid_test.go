@@ -111,6 +111,32 @@ func TestFromHexError(t *testing.T) {
 	}
 }
 
+func TestFromBase64(t *testing.T) {
+	g := New()
+	g2, err := FromBase64(g.Base64())
+
+	if err != nil {
+		t.Errorf("FromBase64(%v) = %v, want nil", g.Base64(), err)
+	}
+
+	if g != g2 {
+		t.Errorf("FromBase64(%v) = %v, want %v", g.Base64(), g2, g)
+	}
+}
+
+func TestFromBase64Error(t *testing.T) {
+	shortBase64 := "5f9e6b"
+	_, err := FromBase64(shortBase64)
+
+	if err == nil {
+		t.Errorf("FromBase64(%v) = %v, want %v", shortBase64, err, ErrInvalidBase64)
+	}
+
+	invalidBase64 := "ZJH6hPBsxutRK2!$"
+	if _, err := FromBase64(invalidBase64); err == nil {
+		t.Errorf("FromBase64(%v) = %v, want %v", invalidBase64, err, ErrInvalidBase64)
+	}
+}
 func Benchmark_Generate(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		_ = New()
