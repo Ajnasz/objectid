@@ -137,6 +137,38 @@ func TestFromBase64Error(t *testing.T) {
 		t.Errorf("FromBase64(%v) = %v, want %v", invalidBase64, err, ErrInvalidBase64)
 	}
 }
+
+func Test_FromTime(t *testing.T) {
+
+	timeFormats := []string{
+		"2019-01-01T00:00:00Z",
+		"2019-01-01T00:00-00:00",
+		"2019-01-01T00-00:00",
+		"2019-01-01",
+	}
+
+	expected := "5c2aad800000000000000000"
+	for _, timeStr := range timeFormats {
+		counter.Store(0x6b5f9e)
+		g, err := FromTime(timeStr)
+
+		if err != nil {
+			t.Fatalf("FromTime(%v) = %v, want nil", timeStr, err)
+		}
+
+		if g.Hex() != expected {
+			t.Fatalf("FromTime(%v) = %v, want %v", timeStr, g.Hex(), expected)
+		}
+	}
+
+	timeStr := "01-01-2019"
+	g, err := FromTime(timeStr)
+
+	if err == nil {
+		t.Errorf("FromTime(%v) = %v, want %v", timeStr, g, ErrInvalidTimeFormat)
+	}
+}
+
 func Benchmark_Generate(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		_ = New()

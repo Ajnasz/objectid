@@ -15,6 +15,7 @@ import (
 // ErrInvalidHex is returned when an invalid hex string is provided.
 var ErrInvalidHex = fmt.Errorf("invalid hex")
 var ErrInvalidBase64 = fmt.Errorf("invalid base64")
+var ErrInvalidTimeFormat = fmt.Errorf("invalid time format")
 
 // ObjectID is a 12-byte unique identifier for a MongoDB document.
 type ObjectID [12]byte
@@ -70,17 +71,21 @@ func New() ObjectID {
 
 // GenerateTo generates a new ObjectID and writes it to the provided ObjectID
 func GenerateTo(objectID *ObjectID) {
-	timestamp := now().Unix()
 	c := counter.Add(1)
+	generateTo(objectID, now(), c, objectRand)
+}
+
+func generateTo(objectID *ObjectID, t time.Time, c uint32, r [5]byte) {
+	timestamp := t.Unix()
 	objectID[0] = byte(timestamp >> 24)
 	objectID[1] = byte(timestamp >> 16)
 	objectID[2] = byte(timestamp >> 8)
 	objectID[3] = byte(timestamp)
-	objectID[4] = objectRand[0]
-	objectID[5] = objectRand[1]
-	objectID[6] = objectRand[2]
-	objectID[7] = objectRand[3]
-	objectID[8] = objectRand[4]
+	objectID[4] = r[0]
+	objectID[5] = r[1]
+	objectID[6] = r[2]
+	objectID[7] = r[3]
+	objectID[8] = r[4]
 	objectID[9] = byte(c >> 16)
 	objectID[10] = byte(c >> 8)
 	objectID[11] = byte(c)
@@ -116,4 +121,34 @@ func FromBase64(str string) (ObjectID, error) {
 	}
 
 	return ObjectID(base64Bytes), err
+}
+
+func parseTime(str string) (time.Time, error) {
+	formats := []string{
+		time.RFC3339,
+		"2006-01-02T15:04-07:00",
+		"2006-01-02T15:04",
+		"2006-01-02T15-07:00",
+		"2006-01-02",
+	}
+
+	for _, format := range formats {
+		t, err := time.Parse(format, str)
+		if err == nil {
+			return t, nil
+		}
+	}
+
+	return time.Time{}, fmt.Errorf("%w: %s", ErrInvalidTimeFormat, str)
+}
+
+func FromTime(str string) (ObjectID, error) {
+	t, err := parseTime(str)
+	if err != nil {
+		return ObjectID{}, err
+	}
+
+	var oid ObjectID
+	generateTo(&oid, t, 0, [5]byte{0, 0, 0, 0, 0})
+	return oid, nil
 }
