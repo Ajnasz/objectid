@@ -8,6 +8,11 @@ import (
 	"github.com/Ajnasz/objectid"
 )
 
+var (
+	version string
+	build   string
+)
+
 func printTimeOfObjectID(idString string) {
 	oid, err := objectid.FromHex(idString)
 	if err != nil {
@@ -63,11 +68,18 @@ func generateFromDate(date string, format string) {
 
 func main() {
 	n := flag.Int("n", 1, "number of objectid to generate")
+	getVersion := flag.Bool("version", false, "print version")
 	separator := flag.String("separator", "\n", "separator between objectids")
 	format := flag.String("format", "hex", "format of objectid: hex, base64")
 	toTime := flag.String("to-time", "", "convert objectid to time")
 	fromTime := flag.String("from-time", "", "create a new objectid from a date time (RFC3339, $(date -I), $(date -Ihours), $(date -d -Iminutes), $(date -Iseconds)")
 	flag.Parse()
+
+	if *getVersion {
+		fmt.Printf("%s %s", version, build)
+		fmt.Println()
+		os.Exit(0)
+	}
 
 	if toTime != nil && *toTime != "" {
 		printTimeOfObjectID(*toTime)
