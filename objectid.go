@@ -13,9 +13,13 @@ import (
 )
 
 // ErrInvalidHex is returned when an invalid hex string is provided.
-var ErrInvalidHex = fmt.Errorf("invalid hex")
-var ErrInvalidBase64 = fmt.Errorf("invalid base64")
-var ErrInvalidTimeFormat = fmt.Errorf("invalid time format")
+var ErrInvalidHex = errors.New("invalid hex")
+
+// ErrInvalidBase64 is returned when an invalid base64 string is provided.
+var ErrInvalidBase64 = errors.New("invalid base64")
+
+// ErrInvalidTimeFormat is returned when an invalid time format is provided.
+var ErrInvalidTimeFormat = errors.New("invalid time format")
 
 // ObjectID is a 12-byte unique identifier for a MongoDB document.
 type ObjectID [12]byte
