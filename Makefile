@@ -12,8 +12,19 @@ all: test build
 .PHONY: build
 build: bin/objectid
 
-bin/objectid:
+bin/objectid: bin/${BINARY_NAME}.linux.amd64 bin/${BINARY_NAME}.linux.arm64 bin/${BINARY_NAME}.darwin.amd64 bin/${BINARY_NAME}.darwin.arm64
+
+bin/${BINARY_NAME}.linux.amd64:
 	@cd cmd/objectid && GOARCH=amd64 GOOS=linux go build ${BUILD_ARGS} -ldflags "-w -s -X main.version=${VERSION} -X main.build=${BUILD}" -o ../../$@
+
+bin/${BINARY_NAME}.linux.arm64:
+	@cd cmd/objectid && GOARCH=arm64 GOOS=linux go build ${BUILD_ARGS} -ldflags "-w -s -X main.version=${VERSION} -X main.build=${BUILD}" -o ../../$@
+
+bin/${BINARY_NAME}.darwin.amd64:
+	@cd cmd/objectid && GOARCH=amd64 GOOS=darwin go build ${BUILD_ARGS} -ldflags "-w -s -X main.version=${VERSION} -X main.build=${BUILD}" -o ../../$@
+
+bin/${BINARY_NAME}.darwin.arm64:
+	@cd cmd/objectid && GOARCH=arm64 GOOS=darwin go build ${BUILD_ARGS} -ldflags "-w -s -X main.version=${VERSION} -X main.build=${BUILD}" -o ../../$@
 
 .PHONY: clean
 clean:
