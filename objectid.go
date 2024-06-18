@@ -26,12 +26,12 @@ type ObjectID [12]byte
 
 // String returns the hex encoding of the ObjectID as a string.
 func (id ObjectID) String() string {
-	return fmt.Sprintf("%x", []byte(id[:]))
+	return id.Hex()
 }
 
 // Hex returns the hex encoding of the ObjectID as a string.
 func (id ObjectID) Hex() string {
-	return id.String()
+	return fmt.Sprintf("%x", []byte(id[:]))
 }
 
 // Base64 returns the hex encoding of the ObjectID as a string.
