@@ -68,7 +68,7 @@ go get -u github.com/Ajnasz/objectid
 ```
 
 ```go
-import github.com/Ajnasz/objectid
+import "github.com/Ajnasz/objectid"
 
 
 func main() {
