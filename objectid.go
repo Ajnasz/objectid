@@ -74,6 +74,7 @@ func New() ObjectID {
 }
 
 // GenerateTo generates a new ObjectID and writes it to the provided ObjectID
+// pointer.
 func GenerateTo(objectID *ObjectID) {
 	c := counter.Add(1)
 	generateTo(objectID, now(), c, objectRand)
@@ -113,6 +114,7 @@ func FromHex(str string) (ObjectID, error) {
 	return oid, nil
 }
 
+// FromBase64 decodes a base64 string into an ObjectID.
 func FromBase64(str string) (ObjectID, error) {
 	var oid ObjectID
 	if len(str) != 16 {
@@ -146,6 +148,13 @@ func parseTime(str string) (time.Time, error) {
 	return time.Time{}, fmt.Errorf("%w: %s", ErrInvalidTimeFormat, str)
 }
 
+// FromTime creates a new ObjectID from a time string.
+// The time string must be in one of the formats:
+// RFC3339,
+// "2006-01-02T15:04-07:00",
+// "2006-01-02T15:04",
+// "2006-01-02T15-07:00",
+// "2006-01-02",
 func FromTime(str string) (ObjectID, error) {
 	t, err := parseTime(str)
 	if err != nil {
