@@ -71,8 +71,8 @@ func main() {
 	getVersion := flag.Bool("version", false, "print version")
 	separator := flag.String("separator", "\n", "separator between objectids")
 	format := flag.String("format", "hex", "format of objectid: hex, base64")
-	toTime := flag.String("to-time", "", "convert objectid to time")
-	fromTime := flag.String("from-time", "", "create a new objectid from a date time (RFC3339, $(date -I), $(date -Ihours), $(date -d -Iminutes), $(date -Iseconds)")
+	toTime := flag.String("to-time", "", "convert objectid to time. Use - to read from stdin")
+	fromTime := flag.String("from-time", "", "create a new objectid from a date time (RFC3339, $(date -I), $(date -Ihours), $(date -d -Iminutes), $(date -Iseconds). Use - to read from stdin")
 	flag.Parse()
 
 	if *getVersion {
@@ -82,12 +82,24 @@ func main() {
 	}
 
 	if toTime != nil && *toTime != "" {
-		printTimeOfObjectID(*toTime)
+		timeToConvert := *toTime
+
+		if *toTime == "-" {
+			fmt.Scanln(&timeToConvert)
+		}
+
+		printTimeOfObjectID(timeToConvert)
 		return
 	}
 
 	if *fromTime != "" {
-		generateFromDate(*fromTime, *format)
+		date := *fromTime
+
+		if *fromTime == "-" {
+			fmt.Scanln(&date)
+		}
+
+		generateFromDate(date, *format)
 		return
 	}
 
